@@ -1,0 +1,7 @@
+JAVAFX
+    DatePicker para las fechas
+    Buscador por rando de contratacion o apellido
+    Altas, Bajas, Modificaciones, Eliminaciones
+
+    Opcional:  
+        Añadir un trbajador a un departamiento
