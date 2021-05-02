@@ -118,7 +118,11 @@ public class UI {
         button = new Button("Lista");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                pantallaLista();
+                try {
+                    pantallaLista();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         hb.getChildren().add(button);
@@ -162,24 +166,28 @@ public class UI {
                 }
             }
         });
+        emo_no.setPromptText("Introduzca el Número de Empleado");
         hb = new HBox();
         hb.getChildren().addAll(label, emo_no);
         vb.getChildren().add(hb);
         
         label = new Label("Fecha de nacimiento");
         birth_date = new DatePicker();
+        birth_date.setPromptText("Introduzca el Día de Cumpleaños");
         hb = new HBox();
         hb.getChildren().addAll(label, birth_date);
         vb.getChildren().add(hb);
         
         label = new Label("Nombre");
         first_name = new TextField();
+        first_name.setPromptText("Introduzca el Nombre");
         hb = new HBox();
         hb.getChildren().addAll(label, first_name);
         vb.getChildren().add(hb);
         
         label = new Label("Apellido");
         last_name = new TextField();
+        last_name.setPromptText("Introduzca el Apellido");
         hb = new HBox();
         hb.getChildren().addAll(label, last_name);
         vb.getChildren().add(hb);
@@ -194,6 +202,7 @@ public class UI {
         
         label = new Label("Fecha de contrato");
         hire_date  = new DatePicker();
+        hire_date.setPromptText("Introduzca la Fecha de contratación");
         hb = new HBox();
         hb.getChildren().addAll(label, hire_date);
         vb.getChildren().add(hb);
@@ -202,19 +211,49 @@ public class UI {
         Button bt = new Button("Añadir");
         bt.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e){
-                int num = Integer.parseInt(emo_no.getText());
+                int num = 0;
                 char sexo;
+                boolean errores = false;
+                
                 if(gender.getValue().compareTo("Mujer") == 0){
                     sexo = 'F';
                 }else{
                     sexo = 'M';
                 }
                 
-                try {
-                    con.altas(num, birth_date.getValue(), first_name.getText(), last_name.getText(), sexo, hire_date.getValue());
-                } catch (SQLException ex) {
-                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                if(emo_no.getText().trim().isEmpty()){
+                    System.out.println("Campo Número Empleado obligatorio");
+                    errores = true;
+                }else{
+                    num = Integer.parseInt(emo_no.getText());
                 }
+                if(birth_date.getValue() == null){
+                    System.out.println("Campo Fecha de Nacimiento obligatorio");
+                    errores = true;
+                }
+                if(first_name.getText().trim().isEmpty()){
+                    System.out.println("Campo Nombre obligatorio");
+                    errores = true;
+                }
+                if(last_name.getText().trim().isEmpty()){
+                    System.out.println("Campo Apellido obligatorio");
+                    errores = true;
+                }
+                if(hire_date.getValue() == null){
+                    System.out.println("Campo Fecha de Contratación obligatorio");
+                    errores = true;
+                }
+                
+                if(errores == false){
+                    try {
+                        con.altas(num, birth_date.getValue(), first_name.getText(), last_name.getText(), sexo, hire_date.getValue());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                
+                
             }
         });
         
@@ -237,6 +276,44 @@ public class UI {
         });
         bp.setTop(button);
         
+        VBox vb = new VBox();
+        HBox hb;
+        
+        Label label = new Label("Número de empleado");
+        emo_no = new TextField();
+        // force the field to be numeric only
+        emo_no.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    emo_no.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        emo_no.setPromptText("Número de Empleado");
+        emo_no.getParent().requestFocus();
+        hb = new HBox();
+        hb.getChildren().addAll(label, emo_no);
+        vb.getChildren().add(hb);
+        
+        //Botón de añadir
+        Button bt = new Button("Borrar");
+        bt.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                if(emo_no.getText().trim().isEmpty()){
+                    System.out.println("Campo Número de Empleado obligatorio");
+                }else{
+                    int num = Integer.parseInt(emo_no.getText());
+                    con.bajas(num);
+                }  
+            }
+        });
+        
+        vb.getChildren().add(bt);
+        
+        bp.setCenter(vb);
+        
         this.scene = new Scene(bp, altura, anchura);
         this.setStage(scene);
     }
@@ -256,16 +333,31 @@ public class UI {
         this.setStage(scene);
     }
     
-    public void pantallaLista(){
+    public void pantallaLista() throws SQLException{
         BorderPane bp = new BorderPane();
-        
+        HBox hb = new HBox();
         Button button = new Button("Atrás");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
+                try {
+                    con.listar();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 pantallaPrincipal();
             }
         });
-        bp.setTop(button);
+        
+        DatePicker dpInicial = new DatePicker();
+        DatePicker dpFinal = new DatePicker();
+        Button btDP = new Button("Filtrar");
+        Button btTodo = new Button("Mostrat Todo");
+        hb.getChildren().addAll(button, dpInicial, dpFinal, btDP, btTodo);
+        bp.setTop(hb);
+        
+        
+        bp.setCenter(con.listar());
+        
         
         this.scene = new Scene(bp, altura, anchura);
         this.setStage(scene);
