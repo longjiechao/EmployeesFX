@@ -12,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -50,16 +51,71 @@ public class ConnectionProperties {
         try{
             Statement st;
             st = con.createStatement();
-            System.out.println("DELETE FROM employees WHERE emp_no = "+emo_no+";");
             st.executeUpdate("DELETE FROM employees WHERE emp_no = "+emo_no); 
             System.out.println("Entrada Eliminado!");
         }catch (SQLException e) {
             System.err.println("Error SQL: " + e.getMessage());
         }
     }
+    
+    public boolean checkById(int emp_no) throws SQLException{
+        boolean encontrado;
+        Statement st;
+        st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM employees WHERE emp_no = " + emp_no);
+        if (!rs.next()) {
+            System.out.println("no data");
+            encontrado = false;
+        }else{
+            encontrado = true;
+        }
+        
+        return encontrado;
+    }
+    
+    public ArrayList<String> getIdElement(int emp_no) throws SQLException{
+        ArrayList<String> al = new ArrayList<String>();
+        
+        Statement st;
+        st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM employees WHERE emp_no = " + emp_no);
+
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+
+        while(rs.next()) {
+            String columna = "";
+            for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                Object object = rs.getObject(columnIndex);
+                if(object != null){
+                    al.add(object.toString());
+                }
+                //System.out.printf("%s, ", object == null ? "NULL" : object.toString());
+            }
+            System.out.println(columna);
+            Text txt = new Text(columna);
+        }
+        
+        return al;
+    }
+    
     public void modificar(int emo_no, LocalDate birth_date, String first_name, String last_name, char gender, LocalDate hire_date){
+        try{
+            Statement st;
+            st = con.createStatement();
+            System.out.println("UPDATE employees SET birth_date = '" +birth_date.toString()+"', first_name = '" +first_name+"', last_name = '" +last_name+"', gender = '" +gender+"', hire_date = '"+hire_date+"' WHERE emp_no = "+emo_no+";");
+            st.executeUpdate("UPDATE employees SET birth_date = '" +birth_date.toString()+"', first_name = '" +first_name+"', last_name = '" +last_name+"', gender = '" +gender+"', hire_date = '"+hire_date+"' WHERE emp_no = "+emo_no+";"); 
+            System.out.println("Entrada Actualizada!");
+        }catch (SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+        }
+    }
+    
+    public void createModificar(){
         
     }
+    
+    //filtra el listado por fechas
     public ScrollPane listarXFecha(LocalDate fechaInicial, LocalDate fechaFinal) throws SQLException{
         ScrollPane sp = new ScrollPane();
         sp.setFitToHeight(true);
@@ -69,13 +125,10 @@ public class ConnectionProperties {
         st = con.createStatement();
         ResultSet rs;
         if(fechaInicial == null && fechaFinal != null){
-            System.out.println("SELECT * FROM employees WHERE hire_date < DATE('" + fechaFinal + "') ORDER BY DATE(hire_date) desc");
             rs = st.executeQuery("SELECT * FROM employees WHERE hire_date < DATE('" + fechaFinal + "') ORDER BY DATE(hire_date) desc");
         }else if(fechaFinal == null && fechaInicial != null){
-            System.out.println("SELECT * FROM employees WHERE hire_date > DATE(" + fechaInicial + ") ORDER BY DATE(hire_date) asc");
             rs = st.executeQuery("SELECT * FROM employees WHERE hire_date > DATE('" + fechaInicial + "') ORDER BY DATE(hire_date) asc");
         }else{
-            System.out.println("SELECT * FROM employees WHERE hire_date > DATE('" + fechaInicial + "') AND hire_date < DATE('" + fechaFinal + "')");
             rs = st.executeQuery("SELECT * FROM employees WHERE hire_date > DATE('" + fechaInicial + "') AND hire_date < DATE('" + fechaFinal + "')");
         }
         
@@ -101,6 +154,7 @@ public class ConnectionProperties {
         
     }
     
+    //mostrat todo
     public ScrollPane listar() throws SQLException{
         ScrollPane sp = new ScrollPane();
         sp.setFitToHeight(true);
