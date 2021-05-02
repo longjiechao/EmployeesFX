@@ -43,6 +43,9 @@ public class UI {
     ComboBox<String> gender;
     DatePicker hire_date;
     
+    DatePicker dpInicial;
+    DatePicker dpFinal;
+    
     ConnectionProperties con;
     
     public UI(Stage primaryStage, int altura, int anchura){
@@ -251,9 +254,6 @@ public class UI {
                         Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
-                
-                
             }
         });
         
@@ -292,7 +292,6 @@ public class UI {
             }
         });
         emo_no.setPromptText("Número de Empleado");
-        emo_no.getParent().requestFocus();
         hb = new HBox();
         hb.getChildren().addAll(label, emo_no);
         vb.getChildren().add(hb);
@@ -339,24 +338,33 @@ public class UI {
         Button button = new Button("Atrás");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                try {
-                    con.listar();
-                } catch (SQLException ex) {
-                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-                }
                 pantallaPrincipal();
             }
         });
         
-        DatePicker dpInicial = new DatePicker();
-        DatePicker dpFinal = new DatePicker();
+        dpInicial = new DatePicker();
+        dpFinal = new DatePicker();
         Button btDP = new Button("Filtrar");
+        btDP.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if(dpInicial.getValue() == null && dpFinal.getValue() == null){
+                    try {
+                        bp.setCenter(con.listar());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }else{
+                    try {
+                        bp.setCenter(con.listarXFecha(dpInicial.getValue(), dpFinal.getValue()));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
         Button btTodo = new Button("Mostrat Todo");
         hb.getChildren().addAll(button, dpInicial, dpFinal, btDP, btTodo);
         bp.setTop(hb);
-        
-        
-        bp.setCenter(con.listar());
         
         
         this.scene = new Scene(bp, altura, anchura);

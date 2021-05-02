@@ -60,8 +60,42 @@ public class ConnectionProperties {
     public void modificar(int emo_no, LocalDate birth_date, String first_name, String last_name, char gender, LocalDate hire_date){
         
     }
-    public void listarXFecha(LocalDate fechaInicial, LocalDate fechaFinal){
+    public ScrollPane listarXFecha(LocalDate fechaInicial, LocalDate fechaFinal) throws SQLException{
+        ScrollPane sp = new ScrollPane();
+        sp.setFitToHeight(true);
+        sp.setFitToWidth(true);
+        VBox vb = new VBox();
+        Statement st;
+        st = con.createStatement();
+        ResultSet rs;
+        if(fechaInicial == null && fechaFinal != null){
+            System.out.println("SELECT * FROM employees WHERE hire_date < DATE('" + fechaFinal + "') ORDER BY DATE(hire_date) desc");
+            rs = st.executeQuery("SELECT * FROM employees WHERE hire_date < DATE('" + fechaFinal + "') ORDER BY DATE(hire_date) desc");
+        }else if(fechaFinal == null && fechaInicial != null){
+            System.out.println("SELECT * FROM employees WHERE hire_date > DATE(" + fechaInicial + ") ORDER BY DATE(hire_date) asc");
+            rs = st.executeQuery("SELECT * FROM employees WHERE hire_date > DATE('" + fechaInicial + "') ORDER BY DATE(hire_date) asc");
+        }else{
+            System.out.println("SELECT * FROM employees WHERE hire_date > DATE('" + fechaInicial + "') AND hire_date < DATE('" + fechaFinal + "')");
+            rs = st.executeQuery("SELECT * FROM employees WHERE hire_date > DATE('" + fechaInicial + "') AND hire_date < DATE('" + fechaFinal + "')");
+        }
         
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+
+        while(rs.next()) {
+            String columna = "";
+            for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                Object object = rs.getObject(columnIndex);
+                if(object != null){
+                    columna += object.toString() + ", ";
+                }
+            }
+            System.out.println(columna);
+            Text txt = new Text(columna);
+            vb.getChildren().add(txt);
+        }
+        sp.setContent(vb);
+        return sp;
     }
     public void listarXApellido(){
         
