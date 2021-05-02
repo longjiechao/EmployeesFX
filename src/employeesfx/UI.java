@@ -5,6 +5,7 @@
  */
 package employeesfx;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,21 +43,21 @@ public class UI {
     ComboBox<String> gender;
     DatePicker hire_date;
     
-    //ConnectionProperties con;
+    ConnectionProperties con;
     
     public UI(Stage primaryStage, int altura, int anchura){
         this.stage = primaryStage;
         this.altura = altura;
         this.anchura = anchura;
-//        try {
-//            con = new ConnectionProperties();
-//        } catch (ClassNotFoundException ex) {
-//            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            con = new ConnectionProperties();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public int getAltura(){
@@ -144,7 +145,6 @@ public class UI {
         Button button = new Button("Atrás");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                System.out.println(birth_date.getValue());
                 pantallaPrincipal();
             }
         });
@@ -209,7 +209,12 @@ public class UI {
                 }else{
                     sexo = 'M';
                 }
-                //con.altas(num, birth_date.getValue(), first_name.getText(), last_name.getText(), sexo, hire_date.getValue());
+                
+                try {
+                    con.altas(num, birth_date.getValue(), first_name.getText(), last_name.getText(), sexo, hire_date.getValue());
+                } catch (SQLException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         

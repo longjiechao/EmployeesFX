@@ -1,6 +1,6 @@
 JAVAFX
     DatePicker para las fechas
-    Buscador por rando de contratacion o apellido
+    Buscador por rango de contratacion o apellido
     Altas, Bajas, Modificaciones, Eliminaciones
 
     Opcional:  

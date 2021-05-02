@@ -8,6 +8,7 @@ package employeesfx;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 
 /**
@@ -29,8 +30,17 @@ public class ConnectionProperties {
         }
     }
     
-    public void altas(int emo_no, LocalDate birth_date, String first_name, String last_name, char gender, LocalDate hire_date){
-        
+    public void altas(int emo_no, LocalDate birth_date, String first_name, String last_name, char gender, LocalDate hire_date) throws SQLException{
+        try{
+            System.out.println("Ha entrado");
+            Statement st;
+            st = con.createStatement();
+            System.out.println("INSERT INTO employees(emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES(" +emo_no+", '" +birth_date.toString()+"','" +first_name+"','" +last_name+"','" +gender+"','"+hire_date+"')");
+            int numFiles = st.executeUpdate("INSERT INTO employees(emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES("+emo_no+", '"+birth_date.toString()+"','"+first_name+"','"+last_name+"','"+gender+"','"+hire_date+"')"); 
+            System.out.println("Inserció creada! Files afectades: " + numFiles);
+        }catch (SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+        }
     }
     public void bajas(int emo_no){
         
