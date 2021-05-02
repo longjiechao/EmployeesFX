@@ -8,6 +8,7 @@ package employeesfx;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  *
@@ -28,16 +29,19 @@ public class ConnectionProperties {
         }
     }
     
-    public void altas(){
+    public void altas(int emo_no, LocalDate birth_date, String first_name, String last_name, char gender, LocalDate hire_date){
         
     }
-    public void bajas(){
+    public void bajas(int emo_no){
         
     }
-    public void modificar(){
+    public void modificar(int emo_no, LocalDate birth_date, String first_name, String last_name, char gender, LocalDate hire_date){
         
     }
-    public void eliminar(){
+    public void listarXFecha(){
+        
+    }
+    public void listarXApellido(){
         
     }
 }
