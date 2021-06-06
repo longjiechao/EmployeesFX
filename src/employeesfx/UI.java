@@ -15,6 +15,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -93,6 +94,7 @@ public class UI {
         VBox vb = new VBox();
         HBox hb = new HBox();
         Button button = new Button("Alta");
+        button.setStyle("-fx-background-color: #17c9f4; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 pantallaAltas();
@@ -101,16 +103,19 @@ public class UI {
         //Ir a Pantalla Baja
         hb.getChildren().add(button);
         button = new Button("Baja");
+        button.setStyle("-fx-background-color: #17c9f4; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 pantallaBajas();
             }
         });
         hb.getChildren().add(button);
+        hb.setAlignment(Pos.CENTER_LEFT);
         vb.getChildren().add(hb);
         //Ir a Pantalla Modificar
         hb = new HBox();
         button = new Button("Modificar");
+        button.setStyle("-fx-background-color: #17c9f4; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 pantallaModificar();
@@ -119,6 +124,7 @@ public class UI {
         //Ir a Pantalla Lista
         hb.getChildren().add(button);
         button = new Button("Lista");
+        button.setStyle("-fx-background-color: #17c9f4; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 try {
