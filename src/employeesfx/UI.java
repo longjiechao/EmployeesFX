@@ -44,8 +44,7 @@ public class UI {
     ComboBox<String> gender;
     DatePicker hire_date;
     
-    DatePicker dpInicial;
-    DatePicker dpFinal;
+    TextField dpLname;
     
     ConnectionProperties con;
     
@@ -516,27 +515,26 @@ public class UI {
             }
         });
         
-        dpInicial = new DatePicker();
-        dpFinal = new DatePicker();
+        //tabla
+        
+        
+        dpLname = new TextField();
         Button btDP = new Button("Filtrar");
         btDP.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                if(dpInicial.getValue() == null && dpFinal.getValue() == null){
-                    try {
+                try {
+                    if(dpLname.getText().isEmpty()){
                         bp.setCenter(con.listar());
-                    } catch (SQLException ex) {
-                        Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                    }else{
+                        bp.setCenter(con.listarXApellido(dpLname.getText()));
                     }
-                }else{
-                    try {
-                        bp.setCenter(con.listarXFecha(dpInicial.getValue(), dpFinal.getValue()));
-                    } catch (SQLException ex) {
-                        Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-        hb.getChildren().addAll(button, dpInicial, dpFinal, btDP);
+        hb.getChildren().addAll(button, dpLname, btDP);
         bp.setTop(hb);
         
         
