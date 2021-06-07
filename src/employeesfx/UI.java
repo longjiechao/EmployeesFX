@@ -24,8 +24,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -90,10 +92,12 @@ public class UI {
         
         Text txt = new Text("Empleados");
         bp.setTop(txt);
+        bp.setAlignment(txt, Pos.CENTER);
         //Ir a Pantalla Alta
         VBox vb = new VBox();
         HBox hb = new HBox();
         Button button = new Button("Alta");
+        button.setMaxWidth(100);
         button.setStyle("-fx-background-color: #54c242; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -110,8 +114,12 @@ public class UI {
             }
         });
         hb.getChildren().add(button);
-        hb.setAlignment(Pos.CENTER_LEFT);
+        hb.setSpacing(5);
+        hb.setAlignment(Pos.CENTER);
         vb.getChildren().add(hb);
+        vb.setAlignment(Pos.CENTER);
+        
+        
         //Ir a Pantalla Modificar
         hb = new HBox();
         button = new Button("Modificar");
@@ -135,7 +143,11 @@ public class UI {
             }
         });
         hb.getChildren().add(button);
+        hb.setSpacing(5);
+        hb.setAlignment(Pos.CENTER);
         vb.getChildren().add(hb);
+        vb.setSpacing(5);
+        vb.setAlignment(Pos.CENTER);
         bp.setCenter(vb);
         
         this.scene = new Scene(bp, altura, anchura);
@@ -541,6 +553,7 @@ public class UI {
             }
         });
         hb.getChildren().addAll(button, dpLname, btDP);
+        hb.setHgrow(dpLname, Priority.ALWAYS);
         bp.setTop(hb);
         
         
