@@ -133,7 +133,7 @@ public class ConnectionProperties {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
         
-        ArrayList<Employee> employeeArray = new ArrayList<Employee>();
+        TableView table = getTabla();
         while(rs.next()) {
             ArrayList<String> name = new ArrayList<String>();
             for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -143,11 +143,12 @@ public class ConnectionProperties {
                 }
             }
             int num = Integer.parseInt((name.get(0)));
+            System.out.println(num);
             Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
-            employeeArray.add(emp);
+            table.getItems().add(emp);
         }
         
-        TableView table = getTabla();
+        
         
         vb.getChildren().add(table);
         sp.setContent(vb);
@@ -169,7 +170,7 @@ public class ConnectionProperties {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
         
-        ArrayList<Employee> employeeArray = new ArrayList<Employee>();
+        TableView table = getTabla();
         while(rs.next()) {
             ArrayList<String> name = new ArrayList<String>();
             for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -179,12 +180,12 @@ public class ConnectionProperties {
                 }
             }
             int num = Integer.parseInt((name.get(0)));
-            System.out.println(num);
+            System.out.println(num + name.get(1) + name.get(2) + name.get(3) + name.get(4) + name.get(5));
             Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
-            employeeArray.add(emp);
+            table.getItems().add(emp);
         }
         
-        TableView table = getTabla();
+        
         
         vb.getChildren().add(table);
         sp.setContent(vb);
@@ -203,17 +204,19 @@ public class ConnectionProperties {
         bdayTable.setCellValueFactory(new PropertyValueFactory<>("bday"));
         
         TableColumn<Employee, String> fnameTable = new TableColumn<>("First Name");
-        fnameTable.setCellValueFactory(new PropertyValueFactory<>("fname"));
+        fnameTable.setCellValueFactory(new PropertyValueFactory<>("first_name"));
         
         TableColumn<Employee, String> lnameTable = new TableColumn<>("Last Name");
-        lnameTable.setCellValueFactory(new PropertyValueFactory<>("lname"));
+        lnameTable.setCellValueFactory(new PropertyValueFactory<>("last_name"));
         
         TableColumn<Employee, String> genderTable = new TableColumn<>("Gender");
         genderTable.setCellValueFactory(new PropertyValueFactory<>("gender"));
         
-        TableColumn<Employee, String> contractTable = new TableColumn<>("Contract Date");
-        contractTable.setCellValueFactory(new PropertyValueFactory<>("contract"));
+        TableColumn<Employee, String> contractTable = new TableColumn<>("Hire Date");
+        contractTable.setCellValueFactory(new PropertyValueFactory<>("hire_date"));
+        
         table.getColumns().addAll(idTable, bdayTable, fnameTable, lnameTable, genderTable, contractTable);
+        
         return table;
     }
 }

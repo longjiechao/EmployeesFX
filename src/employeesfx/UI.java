@@ -94,7 +94,7 @@ public class UI {
         VBox vb = new VBox();
         HBox hb = new HBox();
         Button button = new Button("Alta");
-        button.setStyle("-fx-background-color: #17c9f4; ");
+        button.setStyle("-fx-background-color: #54c242; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 pantallaAltas();
@@ -103,7 +103,7 @@ public class UI {
         //Ir a Pantalla Baja
         hb.getChildren().add(button);
         button = new Button("Baja");
-        button.setStyle("-fx-background-color: #17c9f4; ");
+        button.setStyle("-fx-background-color: #f93324; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 pantallaBajas();
@@ -115,7 +115,7 @@ public class UI {
         //Ir a Pantalla Modificar
         hb = new HBox();
         button = new Button("Modificar");
-        button.setStyle("-fx-background-color: #17c9f4; ");
+        button.setStyle("-fx-background-color: #f5a44d; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 pantallaModificar();
@@ -124,7 +124,7 @@ public class UI {
         //Ir a Pantalla Lista
         hb.getChildren().add(button);
         button = new Button("Lista");
-        button.setStyle("-fx-background-color: #17c9f4; ");
+        button.setStyle("-fx-background-color: #64d2ff; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 try {
