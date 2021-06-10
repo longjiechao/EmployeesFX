@@ -5,6 +5,8 @@
  */
 package employeesfx;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,12 +18,17 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -540,16 +547,41 @@ public class UI {
         Button btDP = new Button("Filtrar");
         btDP.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
+                ScrollPane sp = new ScrollPane();
+                sp.setFitToHeight(true);
+                sp.setFitToWidth(true);
+                VBox vb = new VBox();
+                ResultSet rs;
                 try {
-                    if(dpLname.getText().isEmpty()){
-                        bp.setCenter(con.listar());
+                    if(dpLname.getText().isEmpty()){ 
+                        rs = con.listar();
                     }else{
-                        bp.setCenter(con.listarXApellido(dpLname.getText()));
+                        rs = con.listarXApellido(dpLname.getText());
                     }
                     
+                    ResultSetMetaData metaData = rs.getMetaData();
+                    int columnCount = metaData.getColumnCount();
+                    TableView table = getTabla();
+                    while(rs.next()) {
+                        ArrayList<String> name = new ArrayList<String>();
+                        for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                            Object object = rs.getObject(columnIndex);
+                            if(object != null){
+                                name.add(object.toString());
+                            }
+                        }
+                        int num = Integer.parseInt((name.get(0)));
+                        System.out.println(num + name.get(1) + name.get(2) + name.get(3) + name.get(4) + name.get(5));
+                        Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
+                        table.getItems().add(emp);
+                    }
+                    vb.getChildren().add(table);
+                    sp.setContent(vb);
+                    bp.setCenter(sp);
                 } catch (SQLException ex) {
                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
             }
         });
         hb.getChildren().addAll(button, dpLname, btDP);
@@ -559,5 +591,36 @@ public class UI {
         
         this.scene = new Scene(bp, altura, anchura);
         this.setStage(scene);
+    }
+    
+    public TableView getTabla(){
+        //Crear tabla
+        TableView table = new TableView();
+        table.setPlaceholder(new Label("No rows to display"));
+        
+        TableColumn<Employee, String> idTable = new TableColumn<>("ID");
+        idTable.setCellValueFactory(new PropertyValueFactory<>("id"));
+        
+        TableColumn<Employee, String> bdayTable = new TableColumn<>("Birthday");
+        bdayTable.setCellValueFactory(new PropertyValueFactory<>("bday"));
+        
+        TableColumn<Employee, String> fnameTable = new TableColumn<>("First Name");
+        fnameTable.setCellValueFactory(new PropertyValueFactory<>("first_name"));
+        
+        TableColumn<Employee, String> lnameTable = new TableColumn<>("Last Name");
+        lnameTable.setCellValueFactory(new PropertyValueFactory<>("last_name"));
+        
+        TableColumn<Employee, String> genderTable = new TableColumn<>("Gender");
+        genderTable.setCellValueFactory(new PropertyValueFactory<>("gender"));
+        
+        TableColumn<Employee, String> contractTable = new TableColumn<>("Hire Date");
+        contractTable.setCellValueFactory(new PropertyValueFactory<>("hire_date"));
+        
+        TableColumn<Employee, Button> editTable = new TableColumn<>("");
+        editTable.setCellValueFactory(new PropertyValueFactory<>("button"));
+        
+        table.getColumns().addAll(idTable, bdayTable, fnameTable, lnameTable, genderTable, contractTable, editTable);
+        
+        return table;
     }
 }

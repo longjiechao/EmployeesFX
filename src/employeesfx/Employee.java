@@ -6,6 +6,9 @@
 package employeesfx;
 
 import java.time.LocalDate;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 
 /**
  *
@@ -19,6 +22,7 @@ public class Employee {
     private String last_name;
     private String gender;
     private LocalDate hire_date;
+    private Button button;
 
     public Employee(int id, LocalDate bday, String first_name, String last_name, String gender, LocalDate hire_date) {
         this.id = id;
@@ -27,6 +31,12 @@ public class Employee {
         this.last_name = last_name;
         this.gender = gender;
         this.hire_date = hire_date;
+        this.button = new Button("Editar");
+        this.button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println(getId());
+            }
+        });
     }
 
     public int getId() {
@@ -76,5 +86,14 @@ public class Employee {
     public void setHire_date(LocalDate hire_date) {
         this.hire_date = hire_date;
     }
+
+    public Button getButton() {
+        return button;
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
+    }
+    
     
 }

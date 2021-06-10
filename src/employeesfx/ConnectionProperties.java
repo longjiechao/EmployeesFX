@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
@@ -120,76 +121,21 @@ public class ConnectionProperties {
     }
     
     //filtra el listado por apellidos
-    public ScrollPane listarXApellido(String last_name) throws SQLException{
-        ScrollPane sp = new ScrollPane();
-        sp.setFitToHeight(true);
-        sp.setFitToWidth(true);
-        VBox vb = new VBox();
+    public ResultSet listarXApellido(String last_name) throws SQLException{
         Statement st;
         st = con.createStatement();
         ResultSet rs;
         rs = st.executeQuery("select * from employees WHERE last_name LIKE '%" + last_name + "%' ORDER BY last_name, first_name");
-        
-        ResultSetMetaData metaData = rs.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        
-        TableView table = getTabla();
-        while(rs.next()) {
-            ArrayList<String> name = new ArrayList<String>();
-            for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-                Object object = rs.getObject(columnIndex);
-                if(object != null){
-                    name.add(object.toString());
-                }
-            }
-            int num = Integer.parseInt((name.get(0)));
-            System.out.println(num);
-            Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
-            table.getItems().add(emp);
-        }
-        
-        
-        
-        vb.getChildren().add(table);
-        sp.setContent(vb);
-        return sp;
+        return rs;
     }
 
     //mostrat todo
-    public ScrollPane listar() throws SQLException{
-        System.out.println("hey");
-        ScrollPane sp = new ScrollPane();
-        sp.setFitToHeight(true);
-        sp.setFitToWidth(true);
-        VBox vb = new VBox();
+    public ResultSet listar() throws SQLException{
         Statement st;
         st = con.createStatement();
         ResultSet rs;
         rs = st.executeQuery("select * from employees");
-        
-        ResultSetMetaData metaData = rs.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        
-        TableView table = getTabla();
-        while(rs.next()) {
-            ArrayList<String> name = new ArrayList<String>();
-            for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-                Object object = rs.getObject(columnIndex);
-                if(object != null){
-                    name.add(object.toString());
-                }
-            }
-            int num = Integer.parseInt((name.get(0)));
-            System.out.println(num + name.get(1) + name.get(2) + name.get(3) + name.get(4) + name.get(5));
-            Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
-            table.getItems().add(emp);
-        }
-        
-        
-        
-        vb.getChildren().add(table);
-        sp.setContent(vb);
-        return sp;
+        return rs;
     }
     
     public TableView getTabla(){
@@ -215,7 +161,10 @@ public class ConnectionProperties {
         TableColumn<Employee, String> contractTable = new TableColumn<>("Hire Date");
         contractTable.setCellValueFactory(new PropertyValueFactory<>("hire_date"));
         
-        table.getColumns().addAll(idTable, bdayTable, fnameTable, lnameTable, genderTable, contractTable);
+        TableColumn<Employee, Button> editTable = new TableColumn<>("button");
+        editTable.setCellValueFactory(new PropertyValueFactory<>("button"));
+        
+        table.getColumns().addAll(idTable, bdayTable, fnameTable, lnameTable, genderTable, contractTable, editTable);
         
         return table;
     }
