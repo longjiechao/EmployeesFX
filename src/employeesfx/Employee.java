@@ -32,11 +32,6 @@ public class Employee {
         this.gender = gender;
         this.hire_date = hire_date;
         this.button = new Button("Editar");
-        this.button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                System.out.println(getId());
-            }
-        });
     }
 
     public int getId() {

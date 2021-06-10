@@ -573,6 +573,11 @@ public class UI {
                         int num = Integer.parseInt((name.get(0)));
                         System.out.println(num + name.get(1) + name.get(2) + name.get(3) + name.get(4) + name.get(5));
                         Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
+                        emp.getButton().setOnAction(new EventHandler<ActionEvent>() {
+                            @Override public void handle(ActionEvent e) {
+                                System.out.println(emp.getId());
+                            }
+                        });;
                         table.getItems().add(emp);
                     }
                     vb.getChildren().add(table);
