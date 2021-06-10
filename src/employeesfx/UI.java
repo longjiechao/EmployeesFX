@@ -53,6 +53,7 @@ public class UI {
     TextField last_name;
     ComboBox<String> gender;
     DatePicker hire_date;
+    ComboBox<String> departments;
     
     TextField dpLname;
     
@@ -159,14 +160,6 @@ public class UI {
         
         this.scene = new Scene(bp, altura, anchura);
         this.setStage(scene);
-    }
-    
-    public void filtrarXFecha(){
-        
-    }
-    
-    public void filtrarXApellido(){
-        
     }
     
     public void pantallaAltas(){
@@ -390,7 +383,7 @@ public class UI {
                     int num = Integer.parseInt(emo_no.getText());
                     try {
                         if(con.checkById(num)){
-                            pantallaModificar2();
+                            pantallaModificar2(num, "mod");
                         }else{
                             System.out.println("Empleado no encontrado...");
                         }
@@ -410,29 +403,39 @@ public class UI {
         this.setStage(scene);
     }
     
-    public void pantallaModificar2() throws SQLException{
-        int num = Integer.parseInt(emo_no.getText());
-        ArrayList<String> idElements = con.getIdElement(num);
+    public void pantallaModificar2(int id, String type) throws SQLException{
+        ArrayList<String> idElements = con.getIdElement(id);
         for(int i = 0; i < idElements.size(); i++){
             System.out.println(i+ ": "+idElements.get(i));
         }
         
         BorderPane bp = new BorderPane();
-        
         Button button = new Button("Atrás");
-        button.setOnAction(new EventHandler<ActionEvent>(){
-            @Override public void handle(ActionEvent e){
-                pantallaModificar();
-                
-            }
-        });
+        if(type.compareTo("list")==0){
+            button.setOnAction(new EventHandler<ActionEvent>(){
+                @Override public void handle(ActionEvent e){
+                    try {
+                        pantallaLista();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+        }else{
+            button.setOnAction(new EventHandler<ActionEvent>(){
+                @Override public void handle(ActionEvent e){
+                    pantallaModificar();
+                }
+            });
+        }
+        
+        
         bp.setTop(button);
         
         VBox vb = new VBox();
         HBox hb;
         Label label;
         LocalDate newDate;
-        
         label = new Label("Fecha de nacimiento");
         birth_date = new DatePicker();
         birth_date.setPromptText("Introduzca el Día de Cumpleaños");
@@ -480,11 +483,13 @@ public class UI {
         hb.getChildren().addAll(label, hire_date);
         vb.getChildren().add(hb);
         
+        //Dept
+        
+        
         //Botón de añadir
         Button bt = new Button("Modificar");
         bt.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e){
-                int num = 0;
                 char sexo;
                 boolean errores = false;
                 if(gender.getValue().compareTo("Mujer") == 0){
@@ -493,12 +498,6 @@ public class UI {
                     sexo = 'M';
                 }
                 
-                if(emo_no.getText().trim().isEmpty()){
-                    System.out.println("Campo Número Empleado obligatorio");
-                    errores = true;
-                }else{
-                    num = Integer.parseInt(emo_no.getText());
-                }
                 if(birth_date.getValue() == null){
                     System.out.println("Campo Fecha de Nacimiento obligatorio");
                     errores = true;
@@ -517,7 +516,16 @@ public class UI {
                 }
                 
                 if(errores == false){
-                    con.modificar(num, birth_date.getValue(), first_name.getText(), last_name.getText(), sexo, hire_date.getValue());
+                    con.modificar(id, birth_date.getValue(), first_name.getText(), last_name.getText(), sexo, hire_date.getValue());
+                    if(type.compareTo("list")==0){
+                            try {
+                                pantallaLista();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                    }else{
+                        pantallaModificar();
+                    }
                 }
             }
         });
@@ -541,8 +549,6 @@ public class UI {
         });
         
         //tabla
-        
-        
         dpLname = new TextField();
         Button btDP = new Button("Filtrar");
         btDP.setOnAction(new EventHandler<ActionEvent>() {
@@ -575,6 +581,11 @@ public class UI {
                         Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
                         emp.getButton().setOnAction(new EventHandler<ActionEvent>() {
                             @Override public void handle(ActionEvent e) {
+                                try {
+                                    pantallaModificar2(emp.getId(), "list");
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                                 System.out.println(emp.getId());
                             }
                         });;

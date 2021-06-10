@@ -116,10 +116,6 @@ public class ConnectionProperties {
         }
     }
     
-    public void createModificar(){
-        
-    }
-    
     //filtra el listado por apellidos
     public ResultSet listarXApellido(String last_name) throws SQLException{
         Statement st;
@@ -136,36 +132,5 @@ public class ConnectionProperties {
         ResultSet rs;
         rs = st.executeQuery("select * from employees");
         return rs;
-    }
-    
-    public TableView getTabla(){
-        //Crear tabla
-        TableView table = new TableView();
-        table.setPlaceholder(new Label("No rows to display"));
-        
-        TableColumn<Employee, String> idTable = new TableColumn<>("ID");
-        idTable.setCellValueFactory(new PropertyValueFactory<>("id"));
-        
-        TableColumn<Employee, String> bdayTable = new TableColumn<>("Birthday");
-        bdayTable.setCellValueFactory(new PropertyValueFactory<>("bday"));
-        
-        TableColumn<Employee, String> fnameTable = new TableColumn<>("First Name");
-        fnameTable.setCellValueFactory(new PropertyValueFactory<>("first_name"));
-        
-        TableColumn<Employee, String> lnameTable = new TableColumn<>("Last Name");
-        lnameTable.setCellValueFactory(new PropertyValueFactory<>("last_name"));
-        
-        TableColumn<Employee, String> genderTable = new TableColumn<>("Gender");
-        genderTable.setCellValueFactory(new PropertyValueFactory<>("gender"));
-        
-        TableColumn<Employee, String> contractTable = new TableColumn<>("Hire Date");
-        contractTable.setCellValueFactory(new PropertyValueFactory<>("hire_date"));
-        
-        TableColumn<Employee, Button> editTable = new TableColumn<>("button");
-        editTable.setCellValueFactory(new PropertyValueFactory<>("button"));
-        
-        table.getColumns().addAll(idTable, bdayTable, fnameTable, lnameTable, genderTable, contractTable, editTable);
-        
-        return table;
     }
 }
