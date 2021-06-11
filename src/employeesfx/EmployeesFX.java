@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
  */
 public class EmployeesFX extends Application{
     
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) throws SQLException{
         UI ui = new UI(primaryStage, 800, 400);
         ui.pantallaPrincipal();
     }

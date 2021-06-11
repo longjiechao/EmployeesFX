@@ -31,14 +31,16 @@ public class ConnectionProperties {
     static final String DB_USER = "admin";
     static final String DB_PASS = "1234";
     private Connection con;
+    private ArrayList<Departament> departaments;
     
-    public ConnectionProperties() throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+    public ConnectionProperties() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException{
         try {
             con = DriverManager.getConnection(DB_URL + "?user=" + DB_USER +"&password=" + DB_PASS);
             System.out.println("Connexió exitosa a la base de dades!");
         } catch (SQLException e) {
             System.err.println("Error d'establiment de connexió: " + e.getMessage());
         }
+        AllDepartament();
     }
     
     public void altas(int emo_no, LocalDate birth_date, String first_name, String last_name, char gender, LocalDate hire_date) throws SQLException{
@@ -132,5 +134,32 @@ public class ConnectionProperties {
         ResultSet rs;
         rs = st.executeQuery("select * from employees");
         return rs;
+    }
+    
+    public void AllDepartament() throws SQLException{
+        departaments = new ArrayList<>();
+        Statement st;
+        st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM departments");
+
+        while(rs.next()) {
+            Departament dept = new Departament(rs.getString("dept_name"), rs.getString("dept_no"));
+            if(dept != null){
+                departaments.add(dept);
+            }
+        }
+    }
+
+    public ArrayList<Departament> getDepartaments() {
+        return departaments;
+    }
+    
+    public String getDept_empById(int emp_no) throws SQLException{
+        departaments = new ArrayList<>();
+        Statement st;
+        st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM dept_emp WHERE emp_no = " + emp_no);
+        rs.next();
+        return rs.getString("dept_no");
     }
 }

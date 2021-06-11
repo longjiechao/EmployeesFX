@@ -59,7 +59,7 @@ public class UI {
     
     ConnectionProperties con;
     
-    public UI(Stage primaryStage, int altura, int anchura){
+    public UI(Stage primaryStage, int altura, int anchura) throws SQLException{
         this.stage = primaryStage;
         this.altura = altura;
         this.anchura = anchura;
@@ -484,6 +484,21 @@ public class UI {
         vb.getChildren().add(hb);
         
         //Dept
+        label = new Label("Departamentos");
+        departments = new ComboBox<>();
+        departments.getItems().add("None");
+        int dep = 0;
+        ArrayList<Departament> dept = con.getDepartaments();
+        for(int i = 0; i < dept.size(); i++){
+            if(dept.get(i).getDept_no().equals(con.getDept_empById(id))){
+                dep = i+1;
+            }
+            departments.getItems().add(dept.get(i).getDept_name());
+        }
+        departments.getSelectionModel().select(dep);
+        hb = new HBox();
+        hb.getChildren().addAll(label, departments);
+        vb.getChildren().add(hb);
         
         
         //Botón de añadir
