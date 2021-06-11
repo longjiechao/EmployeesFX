@@ -47,7 +47,6 @@ public class ConnectionProperties {
         try{
             Statement st;
             st = con.createStatement();
-            System.out.println("INSERT INTO employees(emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES(" +emo_no+", '" +birth_date.toString()+"','" +first_name+"','" +last_name+"','" +gender+"','"+hire_date+"')");
             int numFiles = st.executeUpdate("INSERT INTO employees(emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES("+emo_no+", '"+birth_date.toString()+"','"+first_name+"','"+last_name+"','"+gender+"','"+hire_date+"')"); 
             System.out.println("Entrada/s creadas! Entrada afectades: " + numFiles);
         }catch (SQLException e) {
@@ -91,16 +90,12 @@ public class ConnectionProperties {
         int columnCount = metaData.getColumnCount();
 
         while(rs.next()) {
-            String columna = "";
             for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 Object object = rs.getObject(columnIndex);
                 if(object != null){
                     al.add(object.toString());
                 }
-                //System.out.printf("%s, ", object == null ? "NULL" : object.toString());
             }
-            System.out.println(columna);
-            Text txt = new Text(columna);
         }
         
         return al;
@@ -118,6 +113,25 @@ public class ConnectionProperties {
         }
     }
     
+    public void modificarDept(Departament modDept, int id, boolean none) throws SQLException{
+        Statement st;
+        st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM dept_emp WHERE emp_no = " + id);
+        if(none == false){
+            st = con.createStatement();
+            st.executeUpdate("DELETE FROM dept_emp WHERE emp_no = "+id); 
+        }else{
+            if(rs.next() == false) {
+                st = con.createStatement();
+                st.executeUpdate("INSERT INTO dept_emp(emp_no, dept_no, from_date, to_date) VALUES ("+id+", '"+modDept.getDept_no()+"',CURDATE(), '9999-01-01')"); 
+                System.out.println("AAAAA");
+            }else{
+                System.out.println("EYEYE");
+            }
+        }
+        
+    }
+    
     //filtra el listado por apellidos
     public ResultSet listarXApellido(String last_name) throws SQLException{
         Statement st;
@@ -132,7 +146,7 @@ public class ConnectionProperties {
         Statement st;
         st = con.createStatement();
         ResultSet rs;
-        rs = st.executeQuery("select * from employees");
+        rs = st.executeQuery("SELECT employees.emp_no AS emp_no, employees.birth_date AS birth_date, employees.first_name AS first_name, employees.last_name AS last_name, employees.gender AS gender, employees.hire_date AS hire_date, departments.dept_name FROM employees, dept_emp, departments WHERE dept_emp.emp_no = employees.emp_no AND dept_emp.dept_no = departments.dept_no");
         return rs;
     }
     
@@ -148,6 +162,9 @@ public class ConnectionProperties {
                 departaments.add(dept);
             }
         }
+        for(int i = 0; i < departaments.size(); i++){
+            System.out.println(departaments.get(i).getDept_no() + " : " + departaments.get(i).getDept_name());
+        }
     }
 
     public ArrayList<Departament> getDepartaments() {
@@ -159,7 +176,11 @@ public class ConnectionProperties {
         Statement st;
         st = con.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM dept_emp WHERE emp_no = " + emp_no);
-        rs.next();
-        return rs.getString("dept_no");
+        if(rs.next() == true){
+            return rs.getString("dept_no");
+        }else{
+            return "none";
+        }
+        
     }
 }

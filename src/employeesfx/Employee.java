@@ -22,15 +22,17 @@ public class Employee {
     private String last_name;
     private String gender;
     private LocalDate hire_date;
+    private String dept;
     private Button button;
 
-    public Employee(int id, LocalDate bday, String first_name, String last_name, String gender, LocalDate hire_date) {
+    public Employee(int id, LocalDate bday, String first_name, String last_name, String gender, LocalDate hire_date, String dept) {
         this.id = id;
         this.bday = bday;
         this.first_name = first_name;
         this.last_name = last_name;
         this.gender = gender;
         this.hire_date = hire_date;
+        this.dept = dept;
         this.button = new Button("Editar");
     }
 
@@ -88,6 +90,14 @@ public class Employee {
 
     public void setButton(Button button) {
         this.button = button;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
     }
     
     

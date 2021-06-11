@@ -58,6 +58,8 @@ public class UI {
     TextField dpLname;
     
     ConnectionProperties con;
+    ArrayList<Departament> dept;
+    Departament modDept;
     
     public UI(Stage primaryStage, int altura, int anchura) throws SQLException{
         this.stage = primaryStage;
@@ -65,6 +67,7 @@ public class UI {
         this.anchura = anchura;
         try {
             con = new ConnectionProperties();
+            dept = con.getDepartaments();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -488,14 +491,14 @@ public class UI {
         departments = new ComboBox<>();
         departments.getItems().add("None");
         int dep = 0;
-        ArrayList<Departament> dept = con.getDepartaments();
         for(int i = 0; i < dept.size(); i++){
             if(dept.get(i).getDept_no().equals(con.getDept_empById(id))){
-                dep = i+1;
+                dep = i;
+                modDept = dept.get(i);
             }
             departments.getItems().add(dept.get(i).getDept_name());
         }
-        departments.getSelectionModel().select(dep);
+        departments.getSelectionModel().select(dep+1);
         hb = new HBox();
         hb.getChildren().addAll(label, departments);
         vb.getChildren().add(hb);
@@ -529,15 +532,30 @@ public class UI {
                     System.out.println("Campo Fecha de Contratación obligatorio");
                     errores = true;
                 }
-                
                 if(errores == false){
                     con.modificar(id, birth_date.getValue(), first_name.getText(), last_name.getText(), sexo, hire_date.getValue());
+                    try {
+                        boolean none;
+                        int y = 0;
+                        if(departments.getValue().compareTo("None") == 0){
+                            none = false;
+                        }else{
+                            y = departments.getSelectionModel().getSelectedIndex()-1;
+                            none = true;
+                        }
+                        con.modificarDept(dept.get(y), id, none);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    
+                    
                     if(type.compareTo("list")==0){
-                            try {
-                                pantallaLista();
-                            } catch (SQLException ex) {
-                                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                        try {
+                            pantallaLista();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }else{
                         pantallaModificar();
                     }
@@ -592,8 +610,8 @@ public class UI {
                             }
                         }
                         int num = Integer.parseInt((name.get(0)));
-                        System.out.println(num + name.get(1) + name.get(2) + name.get(3) + name.get(4) + name.get(5));
-                        Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)));
+                        System.out.println(num + name.get(1) + name.get(2) + name.get(3) + name.get(4) + name.get(5) + name.get(6));
+                        Employee emp = new Employee(num, LocalDate.parse(name.get(1)), name.get(2), name.get(3), name.get(4), LocalDate.parse(name.get(5)), name.get(6));
                         emp.getButton().setOnAction(new EventHandler<ActionEvent>() {
                             @Override public void handle(ActionEvent e) {
                                 try {
@@ -601,7 +619,6 @@ public class UI {
                                 } catch (SQLException ex) {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                System.out.println(emp.getId());
                             }
                         });;
                         table.getItems().add(emp);
@@ -618,7 +635,6 @@ public class UI {
         hb.getChildren().addAll(button, dpLname, btDP);
         hb.setHgrow(dpLname, Priority.ALWAYS);
         bp.setTop(hb);
-        
         
         this.scene = new Scene(bp, altura, anchura);
         this.setStage(scene);
@@ -644,13 +660,16 @@ public class UI {
         TableColumn<Employee, String> genderTable = new TableColumn<>("Gender");
         genderTable.setCellValueFactory(new PropertyValueFactory<>("gender"));
         
-        TableColumn<Employee, String> contractTable = new TableColumn<>("Hire Date");
-        contractTable.setCellValueFactory(new PropertyValueFactory<>("hire_date"));
+        TableColumn<Employee, String> hireTable = new TableColumn<>("Hire Date");
+        hireTable.setCellValueFactory(new PropertyValueFactory<>("hire_date"));
+        
+        TableColumn<Employee, String> deptTable = new TableColumn<>("dept");
+        deptTable.setCellValueFactory(new PropertyValueFactory<>("dept"));
         
         TableColumn<Employee, Button> editTable = new TableColumn<>("");
         editTable.setCellValueFactory(new PropertyValueFactory<>("button"));
         
-        table.getColumns().addAll(idTable, bdayTable, fnameTable, lnameTable, genderTable, contractTable, editTable);
+        table.getColumns().addAll(idTable, bdayTable, fnameTable, lnameTable, genderTable, hireTable, deptTable, editTable);
         
         return table;
     }
