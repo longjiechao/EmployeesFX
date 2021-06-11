@@ -59,7 +59,6 @@ public class UI {
     
     ConnectionProperties con;
     ArrayList<Departament> dept;
-    Departament modDept;
     
     public UI(Stage primaryStage, int altura, int anchura) throws SQLException{
         this.stage = primaryStage;
@@ -492,13 +491,17 @@ public class UI {
         departments.getItems().add("None");
         int dep = 0;
         for(int i = 0; i < dept.size(); i++){
+            System.out.println(con.getDept_empById(id) + "::::::::");
             if(dept.get(i).getDept_no().equals(con.getDept_empById(id))){
                 dep = i;
-                modDept = dept.get(i);
             }
             departments.getItems().add(dept.get(i).getDept_name());
         }
-        departments.getSelectionModel().select(dep+1);
+        if(con.getDept_empById(id).equals("none")){
+            departments.getSelectionModel().select(0);
+        }else{
+            departments.getSelectionModel().select(dep+1);
+        }
         hb = new HBox();
         hb.getChildren().addAll(label, departments);
         vb.getChildren().add(hb);

@@ -124,9 +124,10 @@ public class ConnectionProperties {
             if(rs.next() == false) {
                 st = con.createStatement();
                 st.executeUpdate("INSERT INTO dept_emp(emp_no, dept_no, from_date, to_date) VALUES ("+id+", '"+modDept.getDept_no()+"',CURDATE(), '9999-01-01')"); 
-                System.out.println("AAAAA");
             }else{
-                System.out.println("EYEYE");
+                st = con.createStatement();
+                System.out.println("UPDATE dept_emp SET dept_no = " + modDept.getDept_no() + " WHERE emp_no = "+id);
+                st.executeUpdate("UPDATE dept_emp SET dept_no = '" + modDept.getDept_no() + "' WHERE emp_no = "+id); 
             }
         }
         
